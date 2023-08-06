@@ -11,6 +11,10 @@
         private $sqlQuery;
         private $dataset = [];
 
+        // public data members
+        public $table;
+        public $select = [];
+
         function __construct() {
             $this->dbc = @mysqli_connect(
                 self::DB_HOST,
@@ -31,16 +35,28 @@
             return $string;
         }
 
-        // Get DB Connection String;
+        // get DB Connection String;
         function get_dbc() {
             return $this->dbc;
         }
 
-        // Function equivalent to ==> SELECT * FROM schema_name.table_name
-        function selectAll($tableName)
-        {
+        // function set table name
+        function table($table) {
+            $this->table = $table;
+            return $this;
+        }
+
+        // function to select the columns
+        function select($select = ['*']) {
+            $this->select = $select;
+            return $this;
+        }
+
+        // function to all records
+        function getAll() {
+            // reset dataset array
             $this->dataset = array();
-            $this->sqlQuery = "SELECT * FROM $tableName";
+            $this->sqlQuery = "SELECT * FROM $this->table";
             $results = mysqli_query($this->dbc, $this->sqlQuery);
 
             while($row = mysqli_fetch_array($results, MYSQLI_ASSOC)) {
@@ -49,9 +65,9 @@
             return $this -> dataset;
         }
 
-        // function equivalent to ==> SELECT * FROM schema_name.table_name WHERE clause
-        function selectWhere($tableName, $cols, $vals, $colsType, $oper, $logOper = [])
-        {
+        // function to add WHERE clause
+        function where($cols, $vals, $oper, $colsType, $logOper = []) {
+            // reset dataset array
             $this->dataset = array();
             // check if arguments are passed correctly or not.
             if((count($cols) === count($vals)) && (count($cols) === strlen($colsType)))
@@ -65,7 +81,9 @@
 
                 $whereClause = implode(" ", $whereConditions);
                 
-                $this->sqlQuery = "SELECT * FROM $tableName WHERE $whereClause";
+                $this->select = implode(", ", $this->select);
+
+                $this->sqlQuery = "SELECT $this->select FROM $this->table WHERE $whereClause";
 
                 // prepare string values
                 for($i = 0; $i < strlen($colsType); $i++) {
@@ -88,7 +106,7 @@
         function get_custom_result($types = null, $params = null) 
         {
             $stmt = mysqli_prepare($this->dbc, $this->sqlQuery);
-          
+
             $stmt->bind_param($types, ...$params);
             
             if(!$stmt->execute()) 
