@@ -12,7 +12,6 @@
         private $queryType;
         private $dataset = [];
 
-        private $COLS = [];
         private $VALS = [];
         private $COLSTYPE = '';
 
@@ -51,7 +50,7 @@
         function table($table) {
             $this->table = $table;
             // empty private properties
-            $this->COLS = []; $this->VALS = []; $this->COLSTYPE = '';
+            $this->VALS = []; $this->COLSTYPE = '';
             return $this;
         }
 
@@ -141,6 +140,16 @@
             return $this;
         }
 
+        // To Delete record
+        function delete() {
+            $this->queryType = "delete";
+
+            // DELETE query
+            $this->sqlQuery = "DELETE FROM $this->table";
+
+            return $this;
+        }
+
         // To execute UPDATE/DELETE query
         function execute() {
             if($this->queryType === "update") {
@@ -151,8 +160,10 @@
                 // execute update query
                 $result = mysqli_stmt_execute($stmt);
             }
-
-            unset($this->COLS, $this->VALS, $this->COLSTYPE);
+            else if($this->queryType === "delete") {
+                // execute update query
+                $result = mysqli_query($this->dbc, $this->sqlQuery);
+            }
 
             return $result;
         }
@@ -190,6 +201,10 @@
                     // UPDATE query
                     $this->sqlQuery .= " WHERE $whereClause";
                 }
+                else if($this->queryType === "delete") {
+                    // UPDATE query
+                    $this->sqlQuery .= " WHERE $whereClause";
+                }
 
                 // prepare query and bind parameters
                 $stmt = mysqli_prepare($this->dbc, $this->sqlQuery);
@@ -217,6 +232,10 @@
                 }
                 else if($this->queryType === "update") {
                     // execute update query
+                    $result = mysqli_stmt_execute($stmt);
+                }
+                else if($this->queryType === "delete") {
+                    // execute delete query
                     $result = mysqli_stmt_execute($stmt);
                 }
 
