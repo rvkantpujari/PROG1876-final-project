@@ -49,7 +49,6 @@
                         <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
                             <form class="grid grid-cols-8 gap-4">
                                 <div class="col-span-full md:col-span-2">
-                                    <input type="hidden" name="update_course" id="update_course">
                                     <label class="text-sm text-gray-500" for="course_id">Course ID</label>
                                     <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" value="<?php echo $record[0]['course_id']; ?>" placeholder="Course ID" type="text" id="course_id" readonly/>
                                 </div>
@@ -95,9 +94,10 @@
                     // alert('clicked');
 
                     let formData = { 
-                        update_course : $('#update_course').val(),
+                        update_course : true,
                         course_id : $('#course_id').val(), 
                         course_title : $('#course_title').val(),
+                        course_credits : $('#course_credits').val(),
                         course_desc : $('#course_desc').val() 
                     };
 
