@@ -59,7 +59,6 @@
                                 </div>
 
                                 <div class="col-span-full">
-                                    <input type="hidden" name="update_user" id="update_user">
                                     <label class="text-sm text-gray-500" for="user_email">Email</label>
                                     <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" value="<?php echo $record[0]['user_email']; ?>" placeholder="Email" type="text" id="user_email" readonly/>
                                 </div>
@@ -93,11 +92,12 @@
                     event.preventDefault();
 
                     let formData = { 
-                        update_user : $('#update_user').val(),
+                        update_user : true,
                         user_email : $('#user_email').val(),
                         user_fname : $('#user_fname').val(),
                         user_lname : $('#user_lname').val(),
-                        user_password : $('#user_password').val()
+                        user_password : $('#user_password').val(),
+                        user_type : "STU"
                     };
 
                     console.log(formData);
