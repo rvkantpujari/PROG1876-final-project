@@ -5,7 +5,7 @@
         const DB_USER = 'root';
         const DB_PASSWORD = '';
         const DB_HOST = 'localhost:3308'; // MySQL runs on PORT 3308 instead of default port number 3306
-        const DB_NAME = 'surway';
+        const DB_NAME = 'enroll';
 
         private $dbc;
         private $sqlQuery;
@@ -48,16 +48,41 @@
 
         // To set table name
         function table($table) {
+            // Set private property 'table'
             $this->table = $table;
+
+            // Set query type
+            $this->queryType = "select";
+            
             // empty private properties
-            $this->VALS = []; $this->COLSTYPE = '';
+            $this->VALS = []; $this->COLSTYPE = ''; $this->sqlQuery = '';
+            
+            // Assuming it's a SELECT query
+            $this->sqlQuery = "SELECT * FROM $this->table";
+
+            return $this;
+        }
+
+        // To INNER JOIN two tables 
+        function join($jtable, $col1, $col2) {
+            $this->sqlQuery .= " INNER JOIN $jtable ON $col1 = $col2";
             return $this;
         }
 
         // To select all or specified columns
         function select($select = ['*']) {
+            // Set select property
             $this->select = $select;
+            
+            // Set query type
             $this->queryType = "select";
+
+            // split values by , (comma)
+            $this->select = implode(", ", $this->select);
+
+            // Prepare SELECT statement
+            $this->sqlQuery = "SELECT $this->select FROM $this->table";
+
             return $this;
         }
 
@@ -65,14 +90,19 @@
         function selectAll() {
             // reset dataset array
             $this->dataset = array();
-            // Select ALL Query
-            $this->sqlQuery = "SELECT * FROM $this->table";
+
+            // Check if there is a JOIN or not
+            if(empty($this->sqlQuery))
+                $this->sqlQuery = "SELECT * FROM $this->table"; // Select ALL Query
+            
             // Execute Query
             $results = mysqli_query($this->dbc, $this->sqlQuery);
+
             // Fetch and Assign Row from Results one by one
             while($row = mysqli_fetch_array($results, MYSQLI_ASSOC)) {
                 array_push($this->dataset, $row);
             }
+
             // Return dataset
             return $this -> dataset;
         }
@@ -150,9 +180,21 @@
             return $this;
         }
 
-        // To execute UPDATE/DELETE query
+        // To execute SELECT/UPDATE/DELETE query
         function execute() {
-            if($this->queryType === "update") {
+            if($this->queryType === "select") {
+                // Execute Query
+                $results = mysqli_query($this->dbc, $this->sqlQuery);
+
+                // Fetch and Assign Row from Results one by one
+                while($row = mysqli_fetch_array($results, MYSQLI_ASSOC)) {
+                    array_push($this->dataset, $row);
+                }
+
+                // return dataset
+                return $this->dataset;
+            }
+            else if($this->queryType === "update") {
                 // prepare query and bind parameters
                 $stmt = mysqli_prepare($this->dbc, $this->sqlQuery);
                 $stmt->bind_param($this->COLSTYPE, ...$this->VALS);
@@ -191,20 +233,8 @@
                     $colsType[$i] === 's' ? array_push($this->VALS, "%".$this->prepare_string($vals[$i])."%") : array_push($this->VALS, $vals[$i]);
                 }
                 
-                if($this->queryType === "select") {
-                    // split values by , (comma)
-                    $this->select = implode(", ", $this->select);
-                    // SELECT query
-                    $this->sqlQuery = "SELECT $this->select FROM $this->table WHERE $whereClause";
-                }
-                else if($this->queryType === "update") {
-                    // UPDATE query
-                    $this->sqlQuery .= " WHERE $whereClause";
-                }
-                else if($this->queryType === "delete") {
-                    // UPDATE query
-                    $this->sqlQuery .= " WHERE $whereClause";
-                }
+                // Add WHERE clause
+                $this->sqlQuery .= " WHERE $whereClause";
 
                 // prepare query and bind parameters
                 $stmt = mysqli_prepare($this->dbc, $this->sqlQuery);
@@ -244,6 +274,22 @@
             else {
                 return "Error: Unequal columns count in the query.";
             }
+        }
+
+        function execute_query($query) {
+            // set query to private property
+            $this->sqlQuery = $query;
+            
+            // execute query
+            $results = mysqli_query($this->dbc, $this->sqlQuery);
+            
+            // Fetch and Assign Row from Results one by one
+            while($row = mysqli_fetch_array($results, MYSQLI_ASSOC)) {
+                array_push($this->dataset, $row);
+            }
+
+            // return dataset
+            return $this->dataset;
         }
 
         function __destruct() {
