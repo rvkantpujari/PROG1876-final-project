@@ -25,6 +25,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo $_SESSION['user']; ?> - Edit Student | Enroll</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            .error {color: red; font-size: 0.8rem;}
+        </style>
     </head>
     <body>
         <!-- Header/Navbar -->
@@ -47,15 +50,15 @@
                         </div>
 
                         <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-4 lg:p-12">
-                            <form class="grid grid-cols-8 gap-4">
+                            <form class="grid grid-cols-8 gap-4" id="editStudentForm">
                                 <div class="col-span-full md:col-span-4">
                                     <label class="text-sm text-gray-500" for="user_fname">First Name</label>
-                                    <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" value="<?php echo $record[0]['user_fname']; ?>" placeholder="First Name" type="text" id="user_fname"/>
+                                    <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" value="<?php echo $record[0]['user_fname']; ?>" placeholder="First Name" type="text" name="user_fname" id="user_fname"/>
                                 </div>
 
                                 <div class="col-span-full md:col-span-4">
                                     <label class="text-sm text-gray-500" for="user_lname">Last Name</label>
-                                    <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" value="<?php echo $record[0]['user_lname']; ?>" placeholder="Last Name" type="text" id="user_lname"/>
+                                    <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" value="<?php echo $record[0]['user_lname']; ?>" placeholder="Last Name" type="text" name="user_lname" id="user_lname"/>
                                 </div>
 
                                 <div class="col-span-full">
@@ -65,7 +68,7 @@
 
                                 <div class="col-span-full">
                                     <label class="text-sm text-gray-500" for="user_password">Password</label>
-                                    <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" placeholder="Password" type="password" id="user_password"/>
+                                    <input class="w-full mt-2 rounded-lg border border-gray-300 p-3 text-md" placeholder="Password" type="password" name="user_password" id="user_password"/>
                                 </div>
 
                                 <div class="col-span-full mt-4 flex justify-between md:justify-start">
@@ -82,11 +85,10 @@
         <?php require ('../../layout/footer.php'); ?>
         <!-- Script -->
         <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.js"></script>
         <script>
             $(document).ready(function () 
-            {
-                let btn = $('.btn').on('click', btnClicked);
-                
+            {                
                 function btnClicked(event) 
                 {
                     event.preventDefault();
@@ -99,8 +101,6 @@
                         user_password : $('#user_password').val(),
                         user_type : "STU"
                     };
-
-                    console.log(formData);
 
                     $.ajax({
                         type: "POST",
@@ -115,6 +115,36 @@
                         }
                     });
                 }
+
+                
+                // Form Validations
+                $( "#editStudentForm" ).validate({
+                    rules: {
+                        user_fname: {
+                            required: true,
+                            minlength: 2,
+                            maxlength: 50,
+                        },
+                        user_lname: {
+                            required: true,
+                            minlength: 2,
+                            maxlength: 50,
+                        },
+                        user_email: {
+                            required: true,
+                            email: true,
+                        },
+                        user_password: {
+                            required: true,
+                            minlength: 8,
+                            maxlength: 32
+                        }
+                    },
+                    submitHandler: function(form)
+                    {
+                        let btn = $('.btn').on('click', btnClicked);
+                    }
+                });
             });
         </script>
     </body>
