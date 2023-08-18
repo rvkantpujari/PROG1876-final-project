@@ -49,20 +49,35 @@
                 <tbody>
                     <?php  
                         $courses = $db->table('courses')->selectAll();
+
+                        $enrolled_crs = $db->table('courses')->join('enrolled', 'enrolled.course_id', 'courses.course_id')->selectAll();
+
+                        $enrolled_courses = [];
+                        foreach($enrolled_crs as $crs) {
+                            array_push($enrolled_courses, $crs['course_id']);
+                        }
+
                         foreach($courses as $course) {
                             echo "
                             <tr>
                                 <td>".$course['course_id']."</td>
                                 <td>".$course['course_title']."</td>
                                 <td>".mb_strimwidth($course['course_desc'], 0, 80, '...')."</td>
-                                <td>
-                                    <form method='POST' action='edit-course.php' class='flex'>
+                                <td class='flex'>
+                                    <form method='POST' action='edit-course.php'>
                                         <input type='hidden' name='course_id' value='".$course['course_id']."'>
                                         <input type='submit' value='Edit' name='edit_course' id='".$course['course_id']."' class='px-4 py-2 text-sm md:text-md text-white bg-indigo-500 rounded-md hover:scale-105 cursor-pointer' />
-                                        <input type='submit' value='Delete' name='delete_course' id='del-".$course['course_id']."' class='del-btn ml-5 px-4 py-2 text-sm md:text-md text-white bg-red-500 rounded-md hover:scale-105 cursor-pointer' />
+                                        <!--<input type='submit' value='Delete' name='delete_course' id='del-".$course['course_id']."' class='del-btn ml-5 px-4 py-2 text-sm md:text-md text-white bg-red-500 rounded-md hover:scale-105 cursor-pointer' />-->
                                     </form>
-                                </td>
-                            </tr>";
+                                    ";
+                                    if (in_array($course['course_id'], $enrolled_courses)) {
+                                        echo "<input type='submit' disabled title='Enrolled Course record cannot be deleted.' value='Delete' name='delete_user' id='del-".$course['course_id']."' class='del-btn ml-5 px-4 py-2 text-sm md:text-md text-white bg-red-300 rounded-md hover:scale-105 cursor-pointer'/>";
+                                    }
+                                    else {
+                                        echo "<input type='submit' value='Delete' name='delete_user' id='del-".$course['course_id']."' class='del-btn ml-5 px-4 py-2 text-sm md:text-md text-white bg-red-500 rounded-md hover:scale-105 cursor-pointer'/>";
+                                    }
+                            echo    "</td>";
+                            echo "</tr>";
                         } 
                     ?>
                 </tbody>
