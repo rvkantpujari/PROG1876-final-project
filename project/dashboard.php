@@ -14,7 +14,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?php echo $_SESSION['user']; ?> - Manage Enrollment | Enroll</title>
+        <title><?php echo $_SESSION['user']; ?> - Dashboard | Enroll</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body>
