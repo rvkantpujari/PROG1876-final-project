@@ -42,6 +42,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Sign Up - Enroll</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            .error {color: red; font-size: 0.8rem;}
+        </style>
     </head>
     <body>
         <section class="container h-screen flex justify-center items-center">
@@ -58,7 +61,7 @@
 
                     <p class="mt-1 text-xl text-center text-gray-500">Sign Up</p>
 
-                    <form method="post" class="m-4 grid grid-cols-12 gap-x-2">
+                    <form method="post" class="m-4 grid grid-cols-12 gap-x-2" id="signupForm">
                         <div class="col-span-full md:col-span-6">
                             <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text" name="first_name" placeholder="First Name" />
                         </div>
@@ -76,7 +79,7 @@
                         </div>
 
                         <div class="col-span-full flex items-center justify-end mt-6">
-                        <button name="btnSignUp" class="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-500 transform bg-blue-500 rounded-md hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                            <button name="btnSignUp" class="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-500 transform bg-blue-500 rounded-md hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
                                 Sign Up
                             </button>
                         </div>
@@ -90,5 +93,33 @@
                 </div>
             </div>
         </section>
+        <!-- Script -->
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.js"></script>
+        <script>
+            $( "#signupForm" ).validate({
+                rules: {
+                    first_name: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 50
+                    },
+                    last_name: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 50
+                    },
+                    email: {
+                        required: true,
+                        email: true,
+                    },
+                    password: {
+                        required: true,
+                        minlength: 8,
+                        maxlength: 32
+                    }
+                }
+            });
+        </script>
     </body>
 </html>
