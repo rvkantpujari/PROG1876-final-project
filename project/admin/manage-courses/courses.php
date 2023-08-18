@@ -28,6 +28,12 @@
         <section class="h-[10vh]"><?php require ('../../layout/header.php'); ?></section>
         <!-- Main Section -->
         <section class="h-[80vh] w-full space-4 px-6 py-8 md:px-16 lg:px-28">
+            <div class="flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 md:w-10 md:h-10">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+                <span class="ml-3 text-xl md:text-3xl font-semibold">Manage Courses</span>
+            </div>
             <div class="my-12 md:mt-0 md:mb-16 lg:mt-8 flex justify-center md:justify-start">
                 <a href="add-course.php" class="px-4 py-2 text-white bg-indigo-500 rounded-md hover:scale-105">Add Course</a>
             </div>
